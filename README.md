@@ -2,7 +2,7 @@
 <h3 align="center">Aspiring Data Analyst and QA Analyst</h3>
 
 <img align="right" alt="coding" width="400" src="https://qph.cf2.quoracdn.net/main-qimg-3c919d3b58bdef3f7f42b86c3c9e5479">
-- 🔭 I’m currently working in TCS **QA Analyst on Teamcenter/AWC**
+- 🔭 I’m currently working in TCS QA Analyst on Teamcenter/AWC
 
 - 🌱 I’m currently learning **Tableau/Snowflake/AWS/Azure/GCP/ML**
 
