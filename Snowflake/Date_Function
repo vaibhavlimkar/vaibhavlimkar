@@ -1,0 +1,86 @@
+ides a rich set of date and time functions that allow you to perform various operations on date, time, and timestamp data types. Here are different use cases demonstrating common datetime functions in Snowflake:
+*/
+-- Get current timestamp
+SELECT NOW(); -- 2024-09-08 13:05:55
+
+-- GET CURRENT DATE
+SELECT CURRENT_DATE; -- 2024-09-08
+
+-- -- GET CURRENT TIME
+SELECT CURRENT_TIMESTAMP; -- YYYY-MM-DD HH:MM:SS:MS Time zone
+
+-- -- GET CURRENT DATE
+SELECT CURRENT_TIME; -- 13:06:23
+
+-- This will make the session aware of the time zone, and all timestamp outputs will reflect the Europe/Paris time zone.
+
+ALTER SESSION SET TIMEZONE = 'America/New_York';
+SELECT CURRENT_TIMESTAMP() AS ny_current_time; -- 2024-09-08 05:18:25.879 -0400
+
+ALTER SESSION SET TIMEZONE = 'UTC';
+SELECT CURRENT_TIMESTAMP() AS utc_current_time; -- 2024-09-08 09:17:24.234 +0000
+
+ALTER SESSION SET TIMEZONE = 'Europe/London';
+SELECT CURRENT_TIMESTAMP() AS europe_current_time; -- 2024-09-08 10:26:15.500 +0100
+
+ALTER SESSION SET TIMEZONE = 'Europe/Paris';
+SELECT CURRENT_TIMESTAMP() AS europe_current_time; -- 2024-09-08 11:17:52.927 +0200
+
+ALTER SESSION SET TIMEZONE = 'Asia/Kolkata';
+SELECT CURRENT_TIMESTAMP() AS asia_kol_current_time; -- 2024-09-08 14:50:15.170 +0530
+
+ALTER SESSION SET TIMEZONE = 'Asia/Tokyo';
+SELECT CURRENT_TIMESTAMP() AS asia_tokyo_current_time; -- 2024-09-08 18:24:35.321 +0900
+
+-- -- CONVERT TIMEZONE
+SELECT CONVERT_TIMEZONE('UTC',CURRENT_TIMESTAMP) AS UTC_TIMEZONE;
+
+             --    : Changes the session’s default time zone.
+select CONVERT_TIMEZONE('UTC','Asia/Kolkata',CURRENT_TIMESTAMP()) as current_timestamp; --Converts a timestamp from one time zone to another.
+
+
+-- -- Converting Between TIMESTAMP Types
+-- In Snowflake, there are three timestamp types: TIMESTAMP_NTZ (no time zone), TIMESTAMP_LTZ (local time zone), and TIMESTAMP_TZ (with time zone). You may want to convert between these types, depending on your data needs.
+
+--Example:
+--Convert a TIMESTAMP_NTZ to TIMESTAMP_TZ and assign a specific time zone.
+
+-- Creating a Database Date_Time --
+
+Create Database Date_Time;
+Create Schema Schema_Date_Time;
+Use Date_Time.Schema_Date_Time;
+- USE CASE PRACTICE
+DROP TABLE orders;
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,                  -- Unique identifier for each order
+    customer_name VARCHAR(100),                -- Name of the customer
+    order_date DATE,                           -- Date when the order was placed
+    delivery_date_time  DATETIME                -- Date and time when the order was delivered
+);
+
+INSERT INTO orders (order_id, customer_name, order_date, delivery_date_time)
+VALUES 
+    (1, 'John Doe', '2024-01-15', '2024-01-17 12:30:45'),
+    (2, 'Jane Smith', '2024-03-10', '2024-03-15 14:45:00'),
+    (3, 'Mark Brown', '2024-07-22', '2024-07-23 09:15:30'),
+    (4, 'Sarah Johnson', '2024-08-05', '2024-08-11 16:20:15'),
+    (5, 'David Lee', '2024-12-01', '2024-12-10 18:05:25');
+
+SELECT * FROM ORDERS;
+
+
+-- -- 1. Extracting Components of Date and Time
+-- Use Case: 
+-- Extract specific parts (e.g., year, month, day) from a date or timestamp.
+
+-- Extract Year, Month, Day from a Date
+SELECT 
+    YEAR(CURRENT_DATE) AS year, 
+    MONTH(CURRENT_DATE) AS month, 
+    WEEK(CURRENT_DATE) AS week_number,
+	DAY(CURRENT_DATE) AS day_num;
+    
+
+-- Extraction Function --
+Select 
