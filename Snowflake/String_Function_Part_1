@@ -1,0 +1,276 @@
+Select substr('testing 1 2 3 4',9, 13); -- O/P - 1 2 3 4
+Select substr('testing 1,2,3',0,2); -- O/P - te -- Here 0/1 means works same 0/1 starts from and 2 total character
+Select substr('testing',-2,2); -- O/P ng - piche se 2 value
+
+Select * from AGENTS;
+
+Create Database Demo_Database;
+USE DATABASE DEMO_DATABASE;
+CREATE OR REPLACE TABLE AGENTS
+   (	
+     AGENT_CODE CHAR(6) NOT NULL PRIMARY KEY, 
+	 AGENT_NAME CHAR(40) , 
+	 WORKING_AREA CHAR(35), 
+	 COMMISSION NUMBER(10,2) DEFAULT 0.05, 
+	 PHONE_NO CHAR(15), 
+	 COUNTRY VARCHAR2(25) 
+	 );
+     
+INSERT INTO AGENTS(AGENT_CODE,AGENT_NAME,WORKING_AREA) 
+VALUES ('A110', 'Anand', 'Germany');
+INSERT INTO AGENTS VALUES ('A003', 'Alex ', 'London', '0.13', '075-12458969', '');
+INSERT INTO AGENTS VALUES ('A008', 'Alford', 'New York', '0.12', '044-25874365', '');
+INSERT INTO AGENTS VALUES ('A011', 'Ravi Kumar', 'Bangalore', '0.15', '077-45625874', '');
+INSERT INTO AGENTS VALUES ('A010', 'Santakumar', 'Chennai', '0.14', '007-22388644', '');
+INSERT INTO AGENTS VALUES ('A012', 'Lucida', 'San Jose', '0.12', '044-52981425', '');
+INSERT INTO AGENTS VALUES ('A005', 'Anderson', 'Brisban', '0.13', '045-21447739', '');
+INSERT INTO AGENTS VALUES ('A001', 'Subbarao', 'Bangalore', '0.14', '077-12346674', '');
+INSERT INTO AGENTS VALUES ('A002', 'Mukesh', 'Mumbai', '0.11', '029-12358964', '');
+INSERT INTO AGENTS VALUES ('A006', 'McDen', 'London', '0.15', '078-22255588', '');
+INSERT INTO AGENTS VALUES ('A004', 'Ivan', 'Torento', '0.15', '008-22544166', '');
+INSERT INTO AGENTS VALUES ('A009', 'Benjamin', 'Hampshair', '0.11', '008-22536178', '');
+INSERT INTO AGENTS VALUES ('A007', 'Ramasundar', 'Bangalore',0.15,'077-25814763', '');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+select substring(' ANAND KUMAR JHA', 1, 7);
+select substring(' ANAND KUMAR JHA', 0, 7);
+select substr('Raja Ram',0,3);
+select substr('Raja Ram',3); -- 3 as start point and no end point it will take all value
+select substr('Raja Ram',-3,3);
+select substring('ANAND KUMAR JHA', -7);
+
+
+
+CREATE OR REPLACE FILE FORMAT my_csv_format
+TYPE = 'CSV'
+FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+SKIP_HEADER = 1
+FIELD_DELIMITER = ','
+NULL_IF = ('\\N', 'NULL', '')
+EMPTY_FIELD_AS_NULL = TRUE;
+
+CREATE OR REPLACE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(255)
+);
+
+
+CREATE OR REPLACE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_sku VARCHAR(50),
+    product_name VARCHAR(255)
+);
+
+CREATE OR REPLACE TABLE customer_contact (
+    customer_id INT PRIMARY KEY,
+    phone_number VARCHAR(50)
+);
+
+CREATE OR REPLACE TABLE web_traffic (
+    visit_id INT PRIMARY KEY,
+    website_url VARCHAR(500)
+);
+
+CREATE OR REPLACE TABLE feedback (
+    feedback_id INT PRIMARY KEY,
+    customer_id INT,
+    feedback_text VARCHAR(1000)
+);
+
+--Example 2: Get the substring from a specific string by using table data
+select AGENT_CODE,AGENT_NAME,PHONE_NO,substring(PHONE_NO,0,3) AS PHONE_CODE from agents;
+
+
+
+
+INSERT INTO customers (customer_id, first_name, last_name, email)
+VALUES 
+(1001, NULL, 'Jha', 'anand.jha@gmail.com'),
+(1002, 'Sameer',NULL, 'sameer_sahoo@yahoo.com'),
+(1003, 'Sachin', NULL, 'sachin.oconnor@outlook.com');
+
+INSERT INTO customers (customer_id, first_name, last_name, email)
+VALUES 
+(1004, 'Hemanth', 'Kulkarni', NULL),
+(1005, 'Mayank', 'Agarwal', NULL);
+
+INSERT INTO products (product_id, product_sku, product_name)
+VALUES
+(1101, 'MFGH-1234-Z-9876',NULL),
+(1102, 'XYZG-5678-A-1234',NULL ),
+(1103, 'TUMN-3456-C-4321',NULL );
+
+INSERT INTO customer_contact (customer_id)
+VALUES
+(1001),
+(1002),
+(1003);
+
+INSERT INTO web_traffic (visit_id)
+VALUES
+(1001),
+(1002),
+(1003);
+
+INSERT INTO feedback (feedback_id, customer_id)
+VALUES
+(1001, 346),
+(1002, 592),
+(1003, 876);
+
+select * from customers;
+select * from products;
+select * from customer_contact;
+select * from web_traffic;
+select * from feedback;
+
+
+--------------------- CAST -------------------------
+
+select cast('123.12' as number(4,2)); -- 4 is total number including decimal and 2 is after decimal - 123.11 - total count 5 - it give error
+
+Select cast(12312 as decimal(6,1));
+Select cast(123.12 as int) as INteger_value;
+select cast('123.12' as number(5,2)); -- 5 is total digit inculding decimal and 2 is after decimal
+select '1.645'::decimal(4,2);
+
+-- TRY CAST -- IF - It convert one data type to another and If conversion is not possible then it will give error it takes only String data type
+select try_cast('123.12' as number(4,2));  -- it give null because total value is 5 and we give 4 as total value
+--TRY_CAST( <source_string_expr> AS <target_data_type> )
+select try_cast('05-Mar-2016' as timestamp);
+
+Select try_cast('Anand'as char(5));
+
+-- Trim --
+select trim('❄-❄ABC-❄-', '❄-') as trimmed_string;
+select trim('❄-❄ABC-❄-', '') as trimmed_string;
+SELECT TRIM('********T E S T I N G 1 2 3 4********','*') AS TRIMMED_SPACE;
+
+--ltrim
+select ltrim('#000000123', '#0');
+select ltrim('#0000AISHWARYA', '0#');
+select ltrim('      ANAND JHA', '');
+select ltrim('+91-9004834-455','+91-');
+
+--RTRIM
+select rtrim('$125.00', '0.');
+select rtrim('ANAND JHA*****', '*');
+
+--concat
+select * from agents;
+SELECT CONCAT('KA', ', ', 'India') as state_country;
+SELECT *,concat(AGENT_CODE, '-', AGENT_NAME) AS agent_details from agents;
+
+--To remove the first character from the string you can pass the string in the RTRIM function.
+select LTRIM('Snowflake Remove  ', 'S');
+select LTRIM(lower('Snowflake Remove  '), 's');
+
+-- 3. Trimming extra spaces from feedback text
+SELECT 
+    TRIM(feedback_text) AS trimmed_feedback
+FROM feedback;
+
+------------------------------ CONCAT -----------------
+Select CONCAT('Vaibhav','-','Limkar');
+SELECT 'Big' || 'Billionare' || 'Vaibhav' as Title;
+
+select 'Nested' || ' CONCAT' || ' example!' as Concat_operator;
+
+--Snowflake CONCAT_WS Function
+/* The concat_ws function concatenates two or more strings, or concatenates two or more binary values 
+and adds separator between those strings.
+The CONCAT_WS operator requires at least two arguments, and uses the first argument to separate all following arguments
+
+Following is the concat_ws function syntax
+CONCAT_WS( <separator> , <expression1> [ , <expressionN> ... ] ) */
+
+SELECT CONCAT_WS('-', 'KA','India') as state_country; --  '-' is to be at first position if we want to add in between two text
+SELECT CONCAT_WS('KA','-', 'India') as state_country; 
+
+
+--LENGTH FUNCTION
+SELECT LEN(trim('  Snowflake Space Remove  ')) as length_string;
+SELECT LENGTH(trim('  Snowflake Space Remove  ')) as length_string;
+
+
+
+select REPLACE( '   ANAND KU MA R JH A   ' ,' ','*');
+select REPLACE( '   ANAND KUMAR JHA   ' ,' '); -- 
+SELECT REPLACE('   T  E S T I N G 1 2 3 4   ',' ')
+
+SELECT BTRIM('   Hello World!   ') trimmed_string;
+
+SELECT REPLACE(TRIM('Anand Vai bhav'), ' ', '') AS result;
+SELECT REVERSE('Vaibhav') as Reverse_String;
+
+SELECT REPEAT('ANAND JHA ', 5);
+SELECT LOWER('ANAND KUMAR JHA') AS LOWER_CASE;
+SELECT UPPER('ANAND KUMAR JHA') AS UPPER_CASE;
+SELECT INITCAP('India is my country');
+
+
+CREATE OR REPLACE VIEW AGENTS_VIEW AS
+select *,
+split_part(PHONE_NO,'-', 1) as COUNTRY_CODE ,  -- split phone no 91 -810989 to diffferent column 1column 91 and 2nd column 810989 and 1 is separator ke phele 
+split_part(PHONE_NO,'-', 2) as STD_NO -- 2 separator ke baad
+FROM AGENTS;
+
+SELECT * FROM AGENTS_VIEW;
+
+Select * from AGENTS;
+
+ create or replace table aj_persons
+(
+ NAME CHAR(10),
+ CHILDREN VARCHAR(30)
+);
+
+select split('127.0.0.1', '.'); -- Split in to different part in string format ['127','0','0','1'] -list format
+SELECT SPLIT('ANAND-KUMAR-JHA','-');
+select split_part('aaa--bbb-BBB--ccc', '--',1);
+select split_part('aaa--bbb-BBB--ccc', '--',2);
+select split_part('aaa--bbb-BBB--ccc', '--',3);
+
+-- 5. Extracting first sentence from feedback (useful in summaries)
+SELECT 
+    feedback_text,
+    SPLIT(feedback_text,' '),
+    SPLIT_PART(feedback_text, ',', 1) AS first_part_feedback,
+    SPLIT_PART(feedback_text, ',', 2) AS second_part_feedback
+FROM feedback;
+
+
+--
+SELECT TO_NUMBER(TO_CHAR(TO_DATE('9999-12-31', 'YYYY-MM-DD'), 'YYYYMMDD')) AS date_as_integer;
+
+-- 2. Counting the number of words in feedback (e.g., useful for text length analysis)
+SELECT 
+    feedback_id,
+    feedback_text,
+    SPLIT(trim(feedback_text), ' ') as splitted_words,
+    ARRAY_SIZE(SPLIT(feedback_text, ' ')) AS word_count
+FROM feedback;
+
+-- 4. Replacing specific words in feedback (e.g., 'bad' -> 'poor')
+SELECT 
+    feedback_text,
+    REPLACE(LOWER(feedback_text), 'bad', 'poor') AS updated_feedback
+FROM feedback;
