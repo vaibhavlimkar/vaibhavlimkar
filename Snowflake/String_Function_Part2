@@ -1,0 +1,111 @@
+
+use Demo_Database;
+-- 5. Padding customer ID with leading zeros (useful for reporting)
+SELECT 
+    CUSTOMER_ID,
+    LPAD(CAST(customer_id AS VARCHAR), 5, '*') AS left_padded_customer_id,
+    RPAD(CAST(customer_id AS VARCHAR), 6, '0') AS right_padded_customer_id
+FROM customers;
+
+SELECT RPAD('123', 5, '0') AS padded_string;
+SELECT LPAD('123', 5, '0') AS padded_string;
+
+
+-- Table: products (product_id, product_sku, product_name)
+
+-- 1. Extracting category from product SKU (e.g., 'ELEC-1234-B-9876' -> 'ELEC')
+-- 2. Extracting numeric part from product SKU (e.g., 'ELEC-1234-B-9876' -> '1234')
+
+SELECT 
+    product_sku,
+    SPLIT_PART(product_sku, '-', 1) AS product_category_name_just_before_separator,
+    SPLIT_PART(product_sku, '-', 2) AS product_category_code_just_after_separator,
+    SPLIT_PART(product_sku, '-', 3) AS product_category_layer,
+    SPLIT_PART(product_sku, '-', 4) AS product_category_auth_code,
+    -- 3. Substring product SKU to extract specific positions
+    SUBSTRING(product_sku, 8, 4) AS sku_numeric_part_invalid, -- don't use in this case as PRODUCT_SKU is not unifirm before -
+    SUBSTRING(product_sku, -4, 4) AS sku_numeric_part_valid -- rather use this
+FROM products;
+
+-- 5. Searching for products by category (e.g., all 'TOOL' category products)
+SELECT *
+FROM products
+WHERE POSITION('TOOL', product_sku) < 0;
+
+Select *
+from products;
+
+
+--- ---------------------------------------------- LIKE ----------
+--LIKE
+select * from AGENTS where working_area LIKE '%re';-- ending with e
+select * from AGENTS where working_area LIKE 'B%';-- starting with B followed by any other character
+select * from AGENTS where lower(working_area) LIKE '%alo%'; -- c apperaing anywhee
+select * from AGENTS where lower(working_area) LIKE '__n%'; --3rd character is n and 1st 2 characters can be anaything
+
+
+SELECT * FROM customer_contact
+WHERE phone_number LIKE '(%';  -- Starts from bracket (9198109892157)
+
+select * from AGENTS where lower(working_area) LIKE '__n_a%';
+
+
+-- 1. Use IFNULL to handle missing first or last names
+SELECT 
+    customer_id,
+    IFNULL(first_name, 'Unknown') AS first_name,
+    IFNULL(last_name, 'Customer') AS last_name
+FROM customers;
+
+Select * from CUSTOMERS;
+
+-- 3. Use IFNULL to handle missing emails and set a default
+SELECT 
+    customer_id,
+    IFNULL(email, 'noemail@example.com') AS email_address
+FROM customers;
+
+-- 1. Use IFNULL to replace missing phone numbers with a default placeholder
+SELECT 
+    customer_id,
+    IFNULL(phone_number, 'Not Provided') AS contact_number
+FROM customer_contact;
+
+-- COALESCE(expr1, expr2, ..., exprN): Evaluates multiple expressions and returns the first non-NULL value from the list. It can take multiple arguments, making it more ---------- flexible than IFNULL().
+
+-- 2. Use COALESCE to combine first and last names, with defaults if either is NULL
+SELECT 
+    customer_id,
+    COALESCE(first_name, 'Unknown') || ' ' || COALESCE(last_name, 'Customer') AS full_name
+FROM customers;
+
+
+select coalesce(null,null,'suraj',null,5); -- showing error -- it give first value as number not string 
+select coalesce(null,null,5,null,'suraj'); 
+
+
+select coalesce(null,null,null,5.00,800);
+
+
+
+-- Prioritize contact info: use phone if available, otherwise use email
+SELECT 
+    c.customer_id,
+    cc.phone_number,
+    c.emaiL,
+    COALESCE(cc.phone_number, c.email, 'No Contact Info Available') AS preferred_contact_method
+FROM customers c
+LEFT JOIN customer_contact cc
+ON c.customer_id = cc.customer_id;
+
+
+
+/*
+Let’s consider a business use case where we need to analyze sales trends over the years, extract year and month from the sale date,
+and present the total sales amount for each month formatted in a user-friendly way.
+*/
+SELECT TO_CHAR(TO_DATE('2024-09-21', 'YYYY-MM-DD'), 'YYYYMMDD') AS DATE_AS_CHAR;
+SELECT TO_CHAR(TO_DATE('2024-09-21', 'YYYY-MM-DD'), 'YYYY') AS DATE_YEAR;
+SELECT TO_CHAR(TO_DATE('2024-09-21', 'YYYY-MM-DD'), 'YYYY-MM') AS DATE_YEAR_MON;
+SELECT TO_CHAR(TO_DATE('2024-09-21', 'YYYY-MM-DD'), 'Mon') AS DATE_AS_MONTH;
+SELECT TO_NUMBER(TO_CHAR(TO_DATE('9999-12-31', 'YYYY-MM-DD'), 'YYYYMMDD')) AS date_as_integer;
