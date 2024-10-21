@@ -79,8 +79,89 @@ SELECT
     YEAR(CURRENT_DATE) AS year, 
     MONTH(CURRENT_DATE) AS month, 
     WEEK(CURRENT_DATE) AS week_number,
-	DAY(CURRENT_DATE) AS day_num;
+    DAY(CURRENT_DATE) AS day_num;
     
+ MONTHNAME(CURRENT_DATE) as Month_name,
+    DAYOFMONTH(CURRENT_DATE) as Day_of_MOnth;
+    
+--7. Extracting Week Information
+--Use Case: Get the week number or weekday from a date.
+-- Get the week number of the year
+SELECT WEEK(CURRENT_DATE) AS week_number;
 
--- Extraction Function --
-Select 
+-- Get the day of the week (0 = Sunday, 6 = Saturday)
+SELECT DAYOFWEEK(CURRENT_DATE) AS day_of_week;
+
+--8. Creating Date/Time Values
+--Use Case: Create date or time values from components.
+-- Create a date from year, month, and day
+SELECT DATE_FROM_PARTS(2024, 9, 8) AS custom_date;
+
+
+--2. Date Arithmetic
+---Use Case: Add or subtract intervals from a date or timestamp.
+-- Add 10 days to the current date
+SELECT CURRENT_DATE + INTERVAL '10 DAY' AS future_date; 
+SELECT CURRENT_DATE - INTERVAL '1 MONTH' AS PAST_MONTH;
+SELECT CURRENT_DATE - INTERVAL '1 QUARTER' AS LAST_QRT;
+SELect CURRENT_DATE - INTERVAL '1 YEAR' as Last_Year;
+
+
+-- Subtract 2 day from the current date
+SELECT DATEADD(DAY, -2, CURRENT_DATE) AS past_date;
+SELECT DATEADD(DAY, 1, CURRENT_DATE) AS past_date;
+-- Subtract 1 Month from the current date
+SELECT DATEADD(MONTH, -2, CURRENT_DATE) AS past_date;
+
+-- Subtract 1 Month from the current date
+SELECT DATEADD(MONTH, -2, CURRENT_DATE) AS past_month;
+
+-- Subtract 1 Quarter from the current date
+SELECT DATEADD(Quarter, -2, CURRENT_DATE) AS past_qrt;
+
+-- Subtract 1 day from the current date
+SELECT DATEADD(YEAR,-2, current_date) as past_year;
+
+ -- Adding 2 day in the current date --
+ SELECT DATEADD(DAY,2,current_date) as Future_day;
+
+ --3. Date Difference
+--Use Case: Calculate the difference between two dates or timestamps.
+
+-- Difference in days between two dates
+SELECT DATEDIFF(DAY, '2024-01-01', CURRENT_DATE) AS days_diff;
+
+-- Difference in months between two dates
+SELECT DATEDIFF(MONTH, '2023-01-01', CURRENT_DATE) AS months_diff;
+
+-- Extracting Yr, Month, Day and others 
+
+SELECT EXTRACT(YEAR FROM CURRENT_DATE) AS YR;
+SELECT EXTRACT(MONTH FROM CURRENT_DATE) AS MTH;
+SELECT EXTRACT(DAY FROM CURRENT_DATE) AS DAY;
+SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP) AS MTH;
+
+-- Date Difference between days,month,year,quarter,week
+
+select datediff('day', '2022-06-01',CURRENT_DATE);
+select datediff('day', '2022-07-23','2023-07-19');
+
+select datediff('MONTH', '2021-06-01',CURRENT_DATE);
+select datediff('YEAR', '2014-06-01',CURRENT_DATE);
+
+select dateadd('day',-23,'2022-06-01');
+select dateadd('month',-2,'2022-06-01');
+select dateadd('year',-5,'2022-06-01');
+
+
+-- GET YR FROM DATE
+SELECT DATE_TRUNC('YEAR',CURRENT_DATE) AS YR_FROM_DATE;
+
+-- GET MTH FROM DATE
+SELECT DATE_TRUNC('MONTH',CURRENT_DATE) AS MTH_FROM_DATE;
+
+-- GET DAY FROM DATE
+SELECT DATE_TRUNC('DAY',CURRENT_DATE) AS DAY_FROM_DATE;
+
+SELECT DATE_TRUNC('WEEK',CURRENT_DATE) AS WEEK_FROM_DATE;
+
