@@ -165,3 +165,69 @@ SELECT DATE_TRUNC('DAY',CURRENT_DATE) AS DAY_FROM_DATE;
 
 SELECT DATE_TRUNC('WEEK',CURRENT_DATE) AS WEEK_FROM_DATE;
 
+SELECT DATE_TRUNC('QTR',CURRENT_DATE) AS WEEK_FROM_DATE;
+
+-- current date - 2024 -10-22 so o/p - 2023-10-01 --
+Select ADD_MONTHS(DATE_TRUNC('MONTH',current_date),-12) as current_date;  -- it will give last year same month as of now year 
+
+-- Format date as 'DD/MM/YYYY'
+SELECT TO_CHAR(CURRENT_DATE, 'DD-MM') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'DD-MM-YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'DD/MM/YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM/DD/YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM-DD-YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY-MM') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM-DD-YY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM*DD*YY') AS formatted_date;
+
+
+
+-- convert any other date format to snowflake date formate
+SELECT to_date('08-23-2022','mm-dd-yyyy');
+SELECT to_date('08/23/2022','mm/dd/yyyy');
+
+select QUARTER(to_date('2022-08-24'));
+
+
+SELECT TO_DATE('1993-08-17') AS DATE; -- converting date format to fro
+
+Select TO_DATE('1993-08-17','YYYY-MM-DD');
+
+-- here to date convert date from string to date and to char fetch format as mention dd-mm-yyyy / Dy as day
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'DD-MM-YYYY') AS DATE_DD_MM_YYYY; --THIS WILL BE HIGHLY USED
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MM-YYYY') AS MM_YYYY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MON-YYYY') AS MON_YYYY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MON-YY') AS DATE_MON_YY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'DY') AS DATE_DAY;
+
+SELECT dayname ('1999-08-23');
+
+
+-- Extract Time Zone Information from a TIMESTAMP
+-- The TO_TIMEZONE function can extract the time zone portion from a TIMESTAMP_TZ type.
+
+--Example:
+--Extract the time zone of a timestamp that already has a time zone associated with it.
+
+SELECT 
+    order_id,
+    customer_name,
+    delivery_date_time,
+    delivery_date_time::TIMESTAMP_TZ AS delivery_time_tz
+FROM orders;
+
+
+--Example:
+--Convert a TIMESTAMP_NTZ to TIMESTAMP_TZ and assign a specific time zone.
+SELECT 
+    order_id,
+    delivery_date_time::TIMESTAMP_NTZ AS ntz_delivery_time,
+    delivery_date_time::TIMESTAMP_LTZ AS ltz_delivery_time,
+    delivery_date_time::TIMESTAMP_TZ AS tz_delivery_time,
+    CONVERT_TIMEZONE('Asia/Tokyo', 'America/Los_Angeles', delivery_date_time) AS la_delivery_time
+FROM orders;
