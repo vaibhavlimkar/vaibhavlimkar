@@ -1,0 +1,250 @@
+/*
+Snowflake provides a rich set of date and time functions that allow you to perform various operations on date, time, and timestamp data types. Here are different use cases demonstrating common datetime functions in Snowflake:
+*/
+SELECT CURRENT_USER();
+-- Get current timestamp
+SELECT CURRENT_TIME; -- 2024-09-08 13:05:55
+
+-- GET CURRENT DATE
+SELECT CURRENT_DATE; -- 2024-09-08
+
+-- -- GET CURRENT TIME
+SELECT CURRENT_TIMESTAMP; -- YYYY-MM-DD HH:MM:SS:MS Time zone
+
+-- -- GET CURRENT DATE
+SELECT CURRENT_TIME; -- 13:06:23
+
+-- This will make the session aware of the time zone, and all timestamp outputs will reflect the Europe/Paris time zone.
+
+ALTER SESSION SET TIMEZONE = 'America/New_York';
+SELECT CURRENT_TIMESTAMP() AS ny_current_time; -- 2024-09-08 05:18:25.879 -0400
+
+ALTER SESSION SET TIMEZONE = 'UTC';
+SELECT CURRENT_TIMESTAMP() AS utc_current_time; -- 2024-09-08 09:17:24.234 +0000
+
+ALTER SESSION SET TIMEZONE = 'Europe/London';
+SELECT CURRENT_TIMESTAMP() AS europe_current_time; -- 2024-09-08 10:26:15.500 +0100
+
+ALTER SESSION SET TIMEZONE = 'Europe/Paris';
+SELECT CURRENT_TIMESTAMP() AS europe_current_time; -- 2024-09-08 11:17:52.927 +0200
+
+ALTER SESSION SET TIMEZONE = 'Asia/Kolkata';
+SELECT CURRENT_TIMESTAMP() AS asia_kol_current_time; -- 2024-09-08 14:50:15.170 +0530
+
+ALTER SESSION SET TIMEZONE = 'Asia/Tokyo';
+SELECT CURRENT_TIMESTAMP() AS asia_tokyo_current_time; -- 2024-09-08 18:24:35.321 +0900
+
+-- -- CONVERT TIMEZONE
+SELECT CONVERT_TIMEZONE('UTC',CURRENT_TIMESTAMP) AS UTC_TIMEZONE;
+
+             --    : Changes the session’s default time zone.
+select CONVERT_TIMEZONE('UTC','Asia/Kolkata',CURRENT_TIMESTAMP()) as current_timestamp; --Converts a timestamp from one time zone to another.
+
+
+--Example:
+--Get the current timestamp in UTC and convert it to 'Asia/Kolkata'.
+
+SELECT 
+    CURRENT_TIMESTAMP() AS utc_now,
+    CONVERT_TIMEZONE('Asia/Tokyo', 'Asia/Kolkata', CURRENT_TIMESTAMP()) AS india_current_time;
+
+
+-- -- Converting Between TIMESTAMP Types
+-- In Snowflake, there are three timestamp types: TIMESTAMP_NTZ (no time zone), TIMESTAMP_LTZ (local time zone), and TIMESTAMP_TZ (with time zone). You may want to convert between these types, depending on your data needs.
+
+--Example:
+--Convert a TIMESTAMP_NTZ to TIMESTAMP_TZ and assign a specific time zone.
+
+-- Creating a Database Date_Time --
+
+Create Database Date_Time;
+Create Schema Schema_Date_Time;
+Use Date_Time.Schema_Date_Time;
+- USE CASE PRACTICE
+DROP TABLE orders;
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,                  -- Unique identifier for each order
+    customer_name VARCHAR(100),                -- Name of the customer
+    order_date DATE,                           -- Date when the order was placed
+    delivery_date_time  DATETIME                -- Date and time when the order was delivered
+);
+
+INSERT INTO orders (order_id, customer_name, order_date, delivery_date_time)
+VALUES 
+    (1, 'John Doe', '2024-01-15', '2024-01-17 12:30:45'),
+    (2, 'Jane Smith', '2024-03-10', '2024-03-15 14:45:00'),
+    (3, 'Mark Brown', '2024-07-22', '2024-07-23 09:15:30'),
+    (4, 'Sarah Johnson', '2024-08-05', '2024-08-11 16:20:15'),
+    (5, 'David Lee', '2024-12-01', '2024-12-10 18:05:25');
+
+SELECT * FROM ORDERS;
+
+
+-- -- 1. Extracting Components of Date and Time
+-- Use Case: 
+-- Extract specific parts (e.g., year, month, day) from a date or timestamp.
+
+-- Extract Year, Month, Day from a Date
+SELECT 
+    YEAR(CURRENT_DATE) AS year, 
+    MONTH(CURRENT_DATE) AS month, 
+    WEEK(CURRENT_DATE) AS week_number,
+	DAY(CURRENT_DATE) AS day_num,
+    MONTHNAME(CURRENT_DATE) as Month_name,
+    DAYOFMONTH(CURRENT_DATE) as Day_of_MOnth;
+    
+--7. Extracting Week Information
+--Use Case: Get the week number or weekday from a date.
+-- Get the week number of the year
+SELECT WEEK(CURRENT_DATE) AS week_number;
+
+-- Get the day of the week (0 = Sunday, 6 = Saturday)
+SELECT DAYOFWEEK(CURRENT_DATE) AS day_of_week;
+
+--8. Creating Date/Time Values
+--Use Case: Create date or time values from components.
+-- Create a date from year, month, and day
+SELECT DATE_FROM_PARTS(2024, 9, 8) AS custom_date;
+
+
+--2. Date Arithmetic
+---Use Case: Add or subtract intervals from a date or timestamp.
+-- Add 10 days to the current date
+SELECT CURRENT_DATE + INTERVAL '10 DAY' AS future_date; 
+SELECT CURRENT_DATE - INTERVAL '1 MONTH' AS PAST_MONTH;
+SELECT CURRENT_DATE - INTERVAL '1 QUARTER' AS LAST_QRT;
+SELect CURRENT_DATE - INTERVAL '1 YEAR' as Last_Year;
+
+
+-- Subtract 2 day from the current date
+SELECT DATEADD(DAY, -2, CURRENT_DATE) AS past_date;
+SELECT DATEADD(DAY, 1, CURRENT_DATE) AS past_date;
+-- Subtract 1 Month from the current date
+SELECT DATEADD(MONTH, -2, CURRENT_DATE) AS past_date;
+
+-- Subtract 1 Month from the current date
+SELECT DATEADD(MONTH, -2, CURRENT_DATE) AS past_month;
+
+-- Subtract 1 Quarter from the current date
+SELECT DATEADD(Quarter, -2, CURRENT_DATE) AS past_qrt;
+
+-- Subtract 1 day from the current date
+SELECT DATEADD(YEAR,-2, current_date) as past_year;
+
+ -- Adding 2 day in the current date --
+ SELECT DATEADD(DAY,2,current_date) as Future_day;
+
+ --3. Date Difference
+--Use Case: Calculate the difference between two dates or timestamps.
+
+-- Difference in days between two dates
+SELECT DATEDIFF(DAY, '2024-01-01', CURRENT_DATE) AS days_diff;
+
+-- Difference in months between two dates
+SELECT DATEDIFF(MONTH, '2023-01-01', CURRENT_DATE) AS months_diff;
+
+
+-- Extracting Yr, Month, Day and others 
+
+SELECT EXTRACT(YEAR FROM CURRENT_DATE) AS YR;
+SELECT EXTRACT(MONTH FROM CURRENT_DATE) AS MTH;
+SELECT EXTRACT(DAY FROM CURRENT_DATE) AS DAY;
+SELECT EXTRACT(HOUR FROM CURRENT_TIMESTAMP) AS MTH;
+
+-- Date Difference between days,month,year,quarter,week
+
+select datediff('day', '2022-06-01',CURRENT_DATE);
+select datediff('day', '2022-07-23','2023-07-19');
+
+select datediff('MONTH', '2021-06-01',CURRENT_DATE);
+select datediff('YEAR', '2014-06-01',CURRENT_DATE);
+
+select dateadd('day',-23,'2022-06-01');
+select dateadd('month',-2,'2022-06-01');
+select dateadd('year',-5,'2022-06-01');
+
+
+-- GET YR FROM DATE
+SELECT DATE_TRUNC('YEAR',CURRENT_DATE) AS YR_FROM_DATE;
+
+
+-- GET MTH FROM DATE
+SELECT DATE_TRUNC('MONTH',CURRENT_DATE) AS MTH_FROM_DATE;
+
+-- GET DAY FROM DATE
+SELECT DATE_TRUNC('DAY',CURRENT_DATE) AS DAY_FROM_DATE;
+
+SELECT DATE_TRUNC('WEEK',CURRENT_DATE) AS WEEK_FROM_DATE;
+
+SELECT DATE_TRUNC('QTR',CURRENT_DATE) AS WEEK_FROM_DATE;
+
+-- current date - 2024 -10-22 so o/p - 2023-10-01 --
+Select ADD_MONTHS(DATE_TRUNC('MONTH',current_date),-12) as current_date;  -- it will give last year same month as of now year 
+
+-- Format date as 'DD/MM/YYYY'
+SELECT TO_CHAR(CURRENT_DATE, 'DD-MM') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'DD-MM-YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'DD/MM/YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM/DD/YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM-DD-YYYY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY-MM') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM-DD-YY') AS formatted_date;
+SELECT TO_CHAR(CURRENT_DATE, 'MM*DD*YY') AS formatted_date;
+
+
+
+-- convert any other date format to snowflake date formate
+SELECT to_date('08-23-2022','mm-dd-yyyy');
+
+SELECT to_date('08/23/2022','mm/dd/yyyy');
+
+select QUARTER(to_date('2022-08-24'));
+
+
+SELECT TO_DATE('1993-08-17') AS DATE; -- converting date format to fro
+
+Select TO_DATE('1993-08-17','YYYY-MM-DD');
+
+-- here to date convert date from string to date and to char fetch format as mention dd-mm-yyyy / Dy as day
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'DD-MM-YYYY') AS DATE_DD_MM_YYYY; --THIS WILL BE HIGHLY USED
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MM-YYYY') AS MM_YYYY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MON-YYYY') AS MON_YYYY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'MON-YY') AS DATE_MON_YY;
+
+SELECT TO_CHAR(TO_DATE('1993-08-17'),'DY') AS DATE_DAY;
+
+SELECT dayname ('1999-08-23');
+
+
+-- Extract Time Zone Information from a TIMESTAMP
+-- The TO_TIMEZONE function can extract the time zone portion from a TIMESTAMP_TZ type.
+
+--Example:
+--Extract the time zone of a timestamp that already has a time zone associated with it.
+
+SELECT 
+    order_id,
+    customer_name,
+    delivery_date_time,
+    delivery_date_time::TIMESTAMP_TZ AS delivery_time_tz
+FROM orders;
+
+
+--Example:
+--Convert a TIMESTAMP_NTZ to TIMESTAMP_TZ and assign a specific time zone.
+SELECT 
+    order_id,
+    delivery_date_time::TIMESTAMP_NTZ AS ntz_delivery_time,
+    delivery_date_time::TIMESTAMP_LTZ AS ltz_delivery_time,
+    delivery_date_time::TIMESTAMP_TZ AS tz_delivery_time,
+    CONVERT_TIMEZONE('Asia/Tokyo', 'America/Los_Angeles', delivery_date_time) AS la_delivery_time
+FROM orders;
+
+Alter Database IF EXISTS DEMO_DB_test RENAME to DEMO_DB_TEST;
+
+
+
