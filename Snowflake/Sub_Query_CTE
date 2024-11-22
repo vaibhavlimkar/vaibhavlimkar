@@ -1,0 +1,317 @@
+-- UNDERSTANDING THE CONCEPT OF SUBQUERIES AND CTE -- 
+
+-- Creating a database 
+CREATE DATABASE IF NOT EXISTS sub_and_cte;
+
+
+-- Creating a table bankdetails
+CREATE TABLE IF NOT EXISTS bankdetails(
+    AccountID INT PRIMARY KEY,
+    AccountHolder VARCHAR(100),
+    Balance DECIMAL(10, 2),
+    BankName VARCHAR(100),
+    Username VARCHAR(50),
+    Age INT,
+    City VARCHAR(50),
+    Gender VARCHAR(10),
+    Profession VARCHAR(50),
+    AccountType VARCHAR(20),
+    Investments VARCHAR(3),
+    BranchName VARCHAR(100),
+    AnnualIncome DECIMAL(15, 2),
+    CurrentAccountBalance DECIMAL(15, 2),
+    MonthlyInterest DECIMAL(5, 2)
+);
+
+-- INSERTING THE DATA INTO THE BANK DETAILS TABLE
+INSERT INTO bankdetails (AccountID, AccountHolder, Balance, BankName, Username, Age, City, Gender, Profession, AccountType, Investments, BranchName, AnnualIncome, CurrentAccountBalance, MonthlyInterest)
+VALUES
+    (1005, 'Emma Johnson', 7500.00, 'HDFC Bank', 'emma.johnson', 38, 'San Francisco', 'Female', 'Graphic Designer', 'Savings', 'Yes', 'Bay Area Branch', 600000.00, 25000.00, 0.4),
+    (1006, 'Michael Brown', 4000.00, 'AXIS Bank', 'mike_brown85', 45, 'Boston', 'Male', 'Lawyer', 'Current', 'No', 'Downtown Branch', 800000.00, 35000.00, 0.3),
+    (1007, 'Sophia Wilson', 5500.00, 'IDFC FIRST Bank', 'sophia.wilson', 30, 'Seattle', 'Female', 'Software Developer', 'Savings', 'Yes', 'Eastside Branch', 700000.00, 28000.00, 0.5),
+    (1008, 'Matthew Davis', 6200.00, 'HDFC Bank', 'matthew_davis', 33, 'Philadelphia', 'Male', 'Doctor', 'Current', 'Yes', 'City Center Branch', 900000.00, 40000.00, 0.4),
+    (1009, 'Olivia Martinez', 4800.00, 'AXIS Bank', 'olivia_m', 29, 'Miami', 'Female', 'Financial Analyst', 'Savings', 'No', 'Beachside Branch', 750000.00, 30000.00, 0.6),
+    (1010, 'Daniel Rodriguez', 7000.00, 'IDFC FIRST Bank', 'danielr', 40, 'Dallas', 'Male', 'Engineer', 'Current', 'Yes', 'Downtown Branch', 950000.00, 42000.00, 0.5),
+    (1011, 'Isabella Garcia', 4300.00, 'HDFC Bank', 'isabella_g', 27, 'Austin', 'Female', 'Writer', 'Savings', 'Yes', 'Central Branch', 800000.00, 38000.00, 0.3),
+    (1012, 'William Taylor', 5800.00, 'AXIS Bank', 'w.taylor', 35, 'Phoenix', 'Male', 'Architect', 'Current', 'No', 'Westside Branch', 700000.00, 32000.00, 0.4),
+    (1013, 'Ethan Anderson', 5200.00, 'IDFC FIRST Bank', 'ethan_and', 31, 'Portland', 'Male', 'Sales Manager', 'Savings', 'Yes', 'North Branch', 850000.00, 38000.00, 0.6),
+    (1014, 'Ava Thomas', 6700.00, 'HDFC Bank', 'ava.thomas', 36, 'San Diego', 'Female', 'HR Manager', 'Current', 'Yes', 'Beach Branch', 950000.00, 42000.00, 0.5),
+    (1015, 'James Hernandez', 5100.00, 'AXIS Bank', 'jamesh', 29, 'Charlotte', 'Male', 'Consultant', 'Savings', 'No', 'Uptown Branch', 800000.00, 35000.00, 0.4),
+    (1016, 'Mia Lopez', 7500.00, 'IDFC FIRST Bank', 'mial', 32, 'Las Vegas', 'Female', 'Entrepreneur', 'Current', 'Yes', 'Strip Branch', 900000.00, 40000.00, 0.3),
+    (1017, 'Alexander Scott', 4800.00, 'HDFC Bank', 'ascott', 28, 'Nashville', 'Male', 'Artist', 'Savings', 'Yes', 'Music City Branch', 750000.00, 30000.00, 0.5),
+    (1018, 'Charlotte Green', 6900.00, 'AXIS Bank', 'charlotte_g', 39, 'Atlanta', 'Female', 'Real Estate Agent', 'Current', 'No', 'Downtown Branch', 850000.00, 38000.00, 0.6),
+    (1019, 'Benjamin King', 5400.00, 'IDFC FIRST Bank', 'bking', 34, 'Houston', 'Male', 'Financial Advisor', 'Savings', 'Yes', 'Downtown Branch', 950000.00, 42000.00, 0.4),
+    (1020, 'Amelia Perez', 6200.00, 'HDFC Bank', 'ameliap', 37, 'Denver', 'Female', 'Pharmacist', 'Current', 'Yes', 'Mile High Branch', 800000.00, 35000.00, 0.5),
+    (1021, 'Henry Young', 4500.00, 'AXIS Bank', 'h.young', 28, 'Chicago', 'Male', 'Chef', 'Savings', 'No', 'Windy City Branch', 750000.00, 30000.00, 0.4),
+    (1022, 'Victoria Lee', 7100.00, 'IDFC FIRST Bank', 'victoria.lee', 31, 'Los Angeles', 'Female', 'Fashion Designer', 'Current', 'Yes', 'Westside Branch', 900000.00, 40000.00, 0.3),
+    (1023, 'Andrew Allen', 4900.00, 'HDFC Bank', 'aallen', 29, 'New York', 'Male', 'IT Specialist', 'Savings', 'Yes', 'Big Apple Branch', 850000.00, 38000.00, 0.6),
+    (1024, 'Grace Walker', 6700.00, 'AXIS Bank', 'grace.w', 33, 'Seattle', 'Female', 'Interior Designer', 'Current', 'No', 'Emerald City Branch', 950000.00, 42000.00, 0.5),
+    (1025, 'Liam Perez', 5300.00, 'IDFC FIRST Bank', 'liamp', 36, 'Miami', 'Male', 'Project Manager', 'Savings', 'Yes', 'Beachside Branch', 800000.00, 35000.00, 0.4),
+    (1026, 'Chloe Hall', 6800.00, 'HDFC Bank', 'chloe.hall', 30, 'San Francisco', 'Female', 'Event Planner', 'Current', 'Yes', 'Bay Area Branch', 850000.00, 38000.00, 0.3),
+    (1027, 'Noah Martinez', 4600.00, 'AXIS Bank', 'noah.m', 27, 'Boston', 'Male', 'Research Analyst', 'Savings', 'Yes', 'Downtown Branch', 750000.00, 30000.00, 0.6),
+    (1028, 'Evelyn Hill', 7200.00, 'IDFC FIRST Bank', 'evelynh', 32, 'Chicago', 'Female', 'Psychologist', 'Current', 'Yes', 'Windy City Branch', 900000.00, 40000.00, 0.5),
+    (1029, 'Logan Scott', 5000.00, 'HDFC Bank', 'logans', 29, 'Phoenix', 'Male', 'Sales Representative', 'Savings', 'Yes', 'Desert Branch', 800000.00, 35000.00, 0.4),
+    (1030, 'Avery Lewis', 6600.00, 'AXIS Bank', 'a_lewis', 34, 'Los Angeles', 'Female', 'Dentist', 'Current', 'No', 'Westside Branch', 950000.00, 42000.00, 0.3),
+    (1031, 'Harper Turner', 4700.00, 'IDFC FIRST Bank', 'harper.t', 31, 'San Diego', 'Male', 'Entrepreneur', 'Savings', 'Yes', 'Beach Branch', 750000.00, 30000.00, 0.5),
+    (1032, 'Jackson Baker', 7100.00, 'HDFC Bank', 'jack.b', 38, 'Dallas', 'Female', 'Software Developer', 'Current', 'Yes', 'Metroplex Branch', 900000.00, 40000.00, 0.4),
+    (1033, 'Scarlett Phillips', 5200.00, 'AXIS Bank', 'scarlett.p', 35, 'Houston', 'Male', 'Architect', 'Savings', 'Yes', 'Downtown Branch', 850000.00, 38000.00, 0.6),
+    (1034, 'Luke Garcia', 6900.00, 'IDFC FIRST Bank', 'luke.g', 29, 'Chicago', 'Female', 'Teacher', 'Current', 'No', 'Windy City Branch', 900000.00, 40000.00, 0.5),
+    (1035, 'Aria Clark', 5400.00, 'HDFC Bank', 'aria.c', 32, 'San Francisco', 'Male', 'Doctor', 'Savings', 'Yes', 'Bay Area Branch', 750000.00, 30000.00, 0.4),
+    (1036, 'Oliver Hernandez', 6700.00, 'AXIS Bank', 'oliver.h', 27, 'Los Angeles', 'Female', 'Marketing Manager', 'Current', 'Yes', 'Westside Branch', 950000.00, 42000.00, 0.3),
+    (1037, 'Lily Adams', 4800.00, 'IDFC FIRST Bank', 'lily.a', 34, 'Seattle', 'Male', 'Accountant', 'Savings', 'No', 'Emerald City Branch', 800000.00, 35000.00, 0.6),
+    (1038, 'Leo Rodriguez', 7400.00, 'HDFC Bank', 'leo.r', 31, 'Miami', 'Female', 'Financial Analyst', 'Current', 'Yes', 'Beachside Branch', 950000.00, 42000.00, 0.5),
+    (1039, 'Emily Taylor', 4600.00, 'AXIS Bank', 'emily.t', 28, 'New York', 'Male', 'Engineer', 'Savings', 'Yes', 'Big Apple Branch', 750000.00, 30000.00, 0.4),
+    (1040, 'Mason Martinez', 6900.00, 'IDFC FIRST Bank', 'mason.m', 33, 'San Diego', 'Female', 'HR Manager', 'Current', 'No', 'Beach Branch', 900000.00, 40000.00, 0.3);
+
+
+
+-- CREATING A SEQUENCE FOR AUTO INCREMENT
+CREATE SEQUENCE transaction_id_seq START = 1 INCREMENT = 1;
+
+
+-- CREATING ANOTHER TABLE
+CREATE TABLE banktransactions (
+    TransactionID INT DEFAULT transaction_id_seq.NEXTVAL PRIMARY KEY,
+    AccountID INT,
+    TransactionDate DATE,
+    Amount DECIMAL(10, 2),
+    FOREIGN KEY (AccountID) REFERENCES bankdetails(AccountID)
+);
+
+-- INSERTING DATA INTO THE TABLE 
+INSERT INTO banktransactions (AccountID, TransactionDate, Amount) VALUES
+    (1005, '2024-03-15', 1500.00),
+    (1005, '2024-03-16', 2000.00),
+    (1005, '2024-03-17', 2500.00),
+    (1005, '2024-03-18', 1800.00),
+    (1006, '2024-03-19', 2200.00),
+    (1006, '2024-03-20', 2700.00),
+    (1006, '2024-03-21', 1600.00),
+    (1006, '2024-03-22', 1900.00),
+    (1007, '2024-03-23', 2100.00),
+    (1007, '2024-03-24', 2400.00),
+    (1007, '2024-03-25', 2600.00),
+    (1007, '2024-03-26', 1700.00),
+    (1008, '2024-03-27', 2300.00),
+    (1008, '2024-03-28', 2800.00),
+    (1008, '2024-03-29', 2900.00),
+    (1008, '2024-03-30', 2100.00),
+    (1009, '2024-03-31', 2200.00),
+    (1009, '2024-04-01', 2400.00),
+    (1009, '2024-04-02', 2500.00),
+    (1009, '2024-04-03', 2600.00),
+    (1010, '2024-04-04', 1800.00),
+    (1010, '2024-04-05', 1900.00),
+    (1010, '2024-04-06', 1500.00),
+    (1010, '2024-04-07', 2000.00),
+	(1012, '2024-04-12', 1800.00),
+    (1012, '2024-04-13', 1900.00),
+    (1012, '2024-04-14', 1500.00),
+    (1012, '2024-04-15', 2000.00),
+    (1013, '2024-04-16', 2200.00),
+    (1013, '2024-04-17', 2400.00),
+    (1013, '2024-04-18', 2500.00),
+    (1013, '2024-04-19', 2600.00),
+    (1014, '2024-04-20', 1800.00),
+    (1014, '2024-04-21', 1900.00),
+    (1014, '2024-04-22', 1500.00),
+    (1014, '2024-04-23', 2000.00),
+    (1015, '2024-04-24', 2200.00),
+    (1015, '2024-04-25', 2400.00),
+    (1015, '2024-04-26', 2500.00),
+    (1015, '2024-04-27', 2600.00),
+    (1016, '2024-04-28', 1800.00),
+    (1016, '2024-04-29', 1900.00),
+    (1016, '2024-04-30', 1500.00),
+    (1016, '2024-05-01', 2000.00);
+
+
+-- CHECKING BOTH THE TABLES
+SELECT * FROM bankdetails;
+SELECT * FROM banktransactions;
+
+
+-- UNDERSTANDING THE CONCEPT OF SUBQUERIES
+
+
+-- QUESTION - 1 
+/*
+    Generate the list of account from "HDFC and IDFC Frist Bank" 
+    where the annual income of the account holder is more than the average income from the whole group.
+    Columns needed, AccountID, AccountHolder, BankName, AnnualIncome.
+*/
+-- SOLUTION
+
+
+SELECT 
+ACCOUNTID,
+ACCOUNTHOLDER,
+BANKNAME,
+ANNUALINCOME
+FROM Bankdetails
+where ANNUALINCOME > (Select Round(Avg(ANNUALINCOME),2) from BANKDETAILS)
+and bankname in ('HDFC Bank','IDFC FIRST Bank')
+;
+    
+-- QUESTION 2:
+/*
+    Based on the two tables BANKDETAILS and BANKTRANSACTION.
+    Retrieve all the account details (ACCOUNTID, ACCOUNTHOLDER, BANKNAME, BRANCHNAME)
+    where the transactions were done in the month of march
+    The table must be ordered in the descending order as per the account ID 
+*/
+-- USING THE SUBQUERY METHOD
+
+Select 
+ accountid,
+ accountholder,
+ bankname,
+ branchname
+ from bankdetails
+ where accountid in (
+ Select distinct accountid
+ from banktransactions
+ where month(transactiondate) = 3
+ )
+  order by accountid desc;
+
+
+
+
+
+
+
+
+
+
+
+-- QUESTION 3
+/*
+    Retrieve the following information from the bankdetails and banktransactions tables:
+    AccountID, AccountHolder, BankName, City, Total transactions for March, Total transactions for April
+    Please ensure that the results are ordered by AccountID in descending (DESC) order. 
+    In simple terms, we need to get the count of transactions for each AccountID specifically for the months of March and April.
+*/
+Select accountid, count(*)
+from banktransactions  -- trial 
+group by accountid;
+
+
+ Select 
+     accountid,
+     accountholder,
+     bankname,
+     branchname,
+     CITY,
+ (
+ Select count(*) from 
+ BANKTRANSACTIONS
+ where BANKDETAILS.ACCOUNTID = BANKTRANSACTIONS.ACCOUNTID
+ and Month(TRANSACTIONDATE) = 3
+ ) as March_Month_Trnx,
+ (
+ Select count(*) from 
+ BANKTRANSACTIONS
+ where BANKDETAILS.ACCOUNTID = BANKTRANSACTIONS.ACCOUNTID
+ and Month(TRANSACTIONDATE) = 4
+ ) as April_Month_Trnx
+ from BANKDETAILS;
+
+
+-- QUESTION 4
+/* 
+    Retrieve the following information from the bankdetails and banktransactions tables: 
+    AccountID, AccountHolder, BankName, City, 
+    Total transactions for the month with the highest transaction count.
+    Please ensure that the results are ordered by Total transactions in descending (DESC) order. 
+    In simple terms, we need to find out which month had the highest number of transactions and return the corresponding 
+    total transactions for each AccountID.
+
+*/
+
+Select Month(TRANSACTIONDATE) as month_number, count(*) as transaction_count,
+from BANKTRANSACTIONS
+group by Month(TRANSACTIONDATE)
+order by transaction_count desc limit 1;
+
+
+
+
+Select 
+AccountID, AccountHolder, BankName, City
+from Bankdetails;
+
+
+
+Select Month(TRANSACTIONDATE) as month_number, count(*) as transaction_count,
+from BANKTRANSACTIONS
+group by Month(TRANSACTIONDATE)
+order by transaction_count desc limit 1;
+*/ -- Here we are find total transaction based on month using count(*) and using group by to aggregate it
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- QUESTION 5
+/* 
+    Retrieve the following information from the bankdetails and banktransactions tables: 
+    AccountID, AccountHolder, BankName, City, and the total transaction amount for accounts that have more than 5 transactions in April.
+    Use a subquery to count the number of transactions for each account in April, and return only those accounts where the transaction count exceeds 5. 
+    Order the results by total transaction amount in descending (DESC) order.
+*/
+
+-- SOLUTION
+
+
+
+
+-- CTE 
+-- QUESTION 6 
+/* 
+    Write a query using a CTE to find the highest transaction amount made by each account 
+    from the Banktransactions table. The CTE should calculate the maximum transaction amount 
+    for each account, and the main query should retrieve those values. 
+*/
+-- SOLUTION
+
+
+
+
+-- QUESTION 7
+/* 
+    Write a query using a CTE to retrieve the count of transactions made by each account 
+    for month of March and April from the Banktransactions table. 
+*/
+-- SOLUTION
+
+
+
+
+-- QUESTION 8
+/* 
+    Write a query using a CTE to find the top 5 highest transaction amounts from the Banktransactions table. 
+    The CTE should first rank the transactions by amount, and the main query should return the top 3.
+*/
+-- SOLUTION
+
+
+
+
+
+-- QUESTION 9
+/* 
+    Write a query using a CTE to find out which bank has the highest number of female accounts 
+    in the Bankdetails table. The CTE should calculate the count of accounts for each bank, 
+    and the main query should retrieve the bank name along with the total number of accounts, 
+    showing only the bank with the maximum count. 
+*/
+-- SOLUTION
